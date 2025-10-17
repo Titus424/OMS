@@ -12,7 +12,7 @@ function getBaseUrl(): string {
     const env = (window as unknown as { __ENV__?: { API_BASE_URL?: string } }).__ENV__?.API_BASE_URL;
     if (env) return env;
   }
-  return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+  return process.env.NEXT_PUBLIC_API_BASE_URL || "";
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<ApiResult<T>> {

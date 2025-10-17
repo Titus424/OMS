@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { backendFetch, getBackendBaseUrl, joinBackendUrl } from "@/server/backend";
 import { OrderStatus, OrderSource } from "@/lib/enums";
 import type { Order } from "@/lib/types";
 
@@ -31,7 +32,18 @@ function mockOrders(): Order[] {
   }));
 }
 
-export function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
+  const backendBase = getBackendBaseUrl();
+  if (backendBase) {
+    const url = new URL(req.url);
+    const query = url.search ? url.search : "";
+    const res = await backendFetch(joinBackendUrl(backendBase, `/api/orders${query}`));
+    const contentType = res.headers.get("content-type") || "";
+    const isJson = contentType.includes("application/json");
+    const body = isJson ? await res.json() : await res.text();
+    return NextResponse.json(body, { status: res.status });
+  }
+
   const url = new URL(req.url);
   const assignedFilter = url.searchParams.get("assigned");
   let data = mockOrders();

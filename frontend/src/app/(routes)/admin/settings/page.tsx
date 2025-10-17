@@ -75,7 +75,7 @@ export default function AdminSettingsPage() {
               variant="outline"
               onClick={async () => {
                 setBackendStatus("Checking…");
-                const res = await api.get<{ ok: boolean; time?: string }>("/health");
+                const res = await api.get<{ ok: boolean; time?: string }>("/api/health");
                 if (res.ok) {
                   setBackendStatus(`OK ${res.data?.time ? `@ ${res.data.time}` : ""}`);
                 } else {
