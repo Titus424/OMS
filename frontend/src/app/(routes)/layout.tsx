@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { cn } from "@/ui/cn";
+import { LogoutButton } from "@/ui/logout-button";
 
 export default function RoutesLayout({ children }: { children: ReactNode }) {
   return (
@@ -17,7 +18,10 @@ export default function RoutesLayout({ children }: { children: ReactNode }) {
           <Section label="Staff" />
           <NavLink href="/staff/orders" label="My Orders" />
         </nav>
-        <div className="mt-auto text-xs text-foreground/60">v0.1.0</div>
+        <div className="mt-auto flex items-center justify-between gap-2">
+          <div className="text-xs text-foreground/60">v0.1.0</div>
+          <LogoutButton />
+        </div>
       </aside>
       <main className="p-4 md:p-6 lg:p-8">{children}</main>
     </div>

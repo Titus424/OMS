@@ -1,9 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { backendFetch, getBackendBaseUrl, joinBackendUrl } from "@/server/backend";
 import { OrderStatus, OrderSource } from "@/lib/enums";
 import type { Order } from "@/lib/types";
 
-export function GET(_req: Request, { params }: { params: { id: string } }) {
-  const id = Number(params.id);
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id: idParam } = await context.params;
+  const id = Number(idParam);
+  const backendBase = getBackendBaseUrl();
+
+  if (backendBase) {
+    const res = await backendFetch(joinBackendUrl(backendBase, `/api/orders/${id}`));
+    const contentType = res.headers.get("content-type") || "";
+    const isJson = contentType.includes("application/json");
+    const body = isJson ? await res.json() : await res.text();
+    return NextResponse.json(body, { status: res.status });
+  }
+
   const order: Order = {
     id,
     shopId: 1,

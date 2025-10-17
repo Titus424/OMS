@@ -9,10 +9,10 @@ export type ApiResult<T> = {
 
 function getBaseUrl(): string {
   if (typeof window !== "undefined") {
-    const env = (window as any).__ENV__?.API_BASE_URL as string | undefined;
+    const env = (window as unknown as { __ENV__?: { API_BASE_URL?: string } }).__ENV__?.API_BASE_URL;
     if (env) return env;
   }
-  return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+  return process.env.NEXT_PUBLIC_API_BASE_URL || "";
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<ApiResult<T>> {
@@ -35,9 +35,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<ApiResult<T
       return { ok: false, error: typeof body === "string" ? body : body?.message || "Request failed", status: res.status };
     }
     return { ok: true, data: body as T, status: res.status };
-  } catch (error: any) {
+  } catch (error: unknown) {
     clearTimeout(id);
-    return { ok: false, error: error?.message || "Network error" };
+    const message = error instanceof Error ? error.message : "Network error";
+    return { ok: false, error: message };
   }
 }
 
