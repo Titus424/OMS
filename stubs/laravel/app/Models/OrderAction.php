@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class OrderAction extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'order_id',
+        'actor_user_id',
+        'action',
+        'from_status',
+        'to_status',
+        'note',
+        'meta',
+    ];
+
+    protected $casts = [
+        'meta' => 'array',
+    ];
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    public function actor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'actor_user_id');
+    }
+}
