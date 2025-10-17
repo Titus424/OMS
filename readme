@@ -1,0 +1,190 @@
+1. Project Overview 
+1.1 Purpose 
+The purpose of this system is to create a centralized Laravel-based Order 
+Management System (OMS) that integrates with the Shopify store to automate order 
+assignment, track order progress, and measure staff performance. 
+The OMS will: 
+ Fetch new orders from Shopify via API. 
+ Distribute orders equally among staff automatically every 15 minutes. 
+ Allow each staff member to manage the full lifecycle of assigned orders — from 
+confirmation to delivery. 
+ Synchronize order statuses and tags with Shopify in real time. 
+ Generate detailed performance and activity reports for management. 
+2. Scope of the System 
+2.1 System Objectives 
+ Automate order fetching and staff assignment. 
+ Provide complete order tracking and workflow visibility. 
+ Maintain synchronization between Shopify and Laravel OMS. 
+ Provide real-time status updates and tagging in Shopify. 
+ Generate performance analytics and reporting for each staff member. 
+2.2 Expected Users 
+ Admin: Has full control over system, users, and reports. 
+ Staff: Handles assigned orders (confirmation, packaging, delivery, etc.). 
+ System (Cron): Automatically fetches and assigns orders. 
+3. Functional Requirements 
+3.1 Integration with Shopify 
+ Connect via Shopify REST API or GraphQL API. 
+ Fetch new orders periodically (every 15 minutes). 
+ Update order tags and statuses on Shopify whenever changes occur in OMS. 
+ Sync order details including: 
+o Order ID 
+o Customer name & contact 
+o Order items 
+o Quantity, price, payment method 
+o Shipping address 
+o Current status 
+o Shopify tags 
+3.2 Order Assignment Module 
+ Cron job will run every 15 minutes. 
+ New unassigned orders will be equally distributed among all active staff. 
+ If there are unprocessed orders from previous batch, they should not be 
+reassigned. 
+ Each assigned order will be linked to: 
+o Assigned staff member 
+o Assigned timestamp 
+o Order source (Shopify) 
+ Admin can manually reassign orders if needed. 
+3.3 Order Workflow Management 
+Each staff member will have access to assigned orders with the following workflow: 
+Stage 
+Action 
+Shopify Tag 
+Update 
+1. Confirmation “Confirm Order” 
+2. Packaging 
+confirmed 
+“Mark as Packed” packed 
+3. 
+Out 
+for 
+Description 
+Staff verifies customer/order 
+details 
+Order is packed and ready for 
+dispatch 
+out-for-delivery Order dispatched to courier 
+Delivery 
+4. Delivered 
+5. Cancelled 
+6. Returned 
+“Mark as Out for 
+Delivery” 
+“Mark as Delivered” delivered 
+“Cancel Order” 
+cancelled 
+“Mark as Returned” returned 
+Order successfully delivered 
+Order 
+cancelled 
+customer/staff 
+Product 
+delivery 
+All actions are logged in both systems (Laravel + Shopify). 
+returned 
+by 
+post
+3.4 Notifications and Alerts 
+ Staff gets notified when new orders are assigned. 
+ Admin receives alerts for: 
+o Failed sync operations 
+o Overdue orders (pending for too long) 
+ Optional: Email or system notifications for important events. 
+3.5 Reporting & Analytics Module 
+Generate performance and operational reports, including: 
+Staff Performance Report 
+ Total orders assigned 
+ Orders confirmed 
+ Orders delivered 
+ Orders cancelled 
+ Orders returned 
+ Average order processing time 
+ Success rate (% delivered / assigned) 
+Operational Reports 
+ Total Shopify orders vs OMS processed orders 
+ Pending vs completed orders 
+ Daily / weekly / monthly performance summaries 
+Reports should be exportable in Excel/PDF format. 
+3.6 Admin Panel Features 
+ User (Staff) management (Add / Edit / Disable) 
+ Order management overview 
+ Manual reassignment of orders 
+ Shopify API configuration (Shop URL, Access Token, etc.) 
+ Cron job management & logs 
+ Report generation 
+ Tag mapping (customize tags for each status) 
+3.7 Staff Panel Features 
+ Dashboard showing: 
+o Assigned orders 
+o Pending orders 
+o Completed orders 
+ Order actions: confirm, pack, deliver, cancel, return 
+ Notes/comments on orders 
+ History of performed actions 
+3.8 Automation (Cron Jobs) 
+ Fetch Orders: Run every 15 minutes to import new orders from Shopify. 
+ Auto Assignment: Divide new orders equally among staff. 
+ Status Sync: Update Shopify with latest order statuses/tags. 
+ Data Integrity Check: Ensure no duplicate or missed orders. 
+4. Non-Functional Requirements 
+Category 
+Requirement 
+Technology 
+Stack 
+Authentication 
+UI/UX 
+Scalability 
+Laravel (latest stable), MySQL, Shopify API, Cron Jobs 
+Laravel Breeze / Fortify / Sanctum (JWT optional for API-based 
+access) 
+Responsive Admin & Staff panels with clean dashboard 
+Should support multiple Shopify stores (future expansion) 
+Category 
+Requirement 
+Security 
+Performance 
+Logging 
+Backup 
+HTTPS, secure API keys, role-based permissions 
+Order assignment & sync tasks optimized for < 10 sec execution 
+per batch 
+System logs for API calls, cron jobs, and user actions 
+Daily database backup automation 
+Error Handling Retry mechanism for failed Shopify API requests 
+5. Optional Future Enhancements 
+ Multi-store management (multiple Shopify stores in one dashboard) 
+ AI-based order priority handling (urgent orders, VIP customers) 
+ Smart staff load balancing (based on current workload, not just equal 
+distribution) 
+ Integration with courier APIs for delivery tracking 
+ KPI dashboard with real-time staff performance 
+ Telegram / WhatsApp notification bot for staff alerts 
+6. Deliverables 
+1. Fully functional Laravel-based OMS web application 
+2. Connected Shopify integration via API 
+3. Cron jobs configured on server 
+4. Admin and staff user interfaces 
+5. Reporting dashboard 
+6. Deployment documentation 
+7. API documentation (Swagger or Postman collection) 
+7. Timeline (Suggested) 
+Phase 
+Deliverable 
+Requirement Analysis Finalized SRS 
+UI/UX Design 
+Duration 
+3 days 
+Wireframes + Admin/Staff Dashboard 5 days 
+Development 
+Testing & QA 
+Deployment 
+Core Modules + Shopify Integration 15–20 days 
+Internal + Client UAT 
+Production setup + Training 
+7 days 
+2 days 
+8. Acceptance Criteria 
+ Orders fetched correctly from Shopify every 15 minutes. 
+ Orders assigned evenly to active staff members. 
+ Status changes reflect in both OMS and Shopify instantly. 
+ Reports generate accurate metrics for each staff member. 
+ System performs reliably under expected order load.
