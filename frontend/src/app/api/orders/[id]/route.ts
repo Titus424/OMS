@@ -1,9 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { OrderStatus, OrderSource } from "@/lib/enums";
 import type { Order } from "@/lib/types";
 
-export function GET(_req: Request, { params }: { params: { id: string } }) {
-  const id = Number(params.id);
+export async function GET(_req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id: idParam } = await context.params;
+  const id = Number(idParam);
   const order: Order = {
     id,
     shopId: 1,
